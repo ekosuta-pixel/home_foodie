@@ -6,11 +6,12 @@
     <title>Tahu Bakso - Pemesanan Online</title>
     <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database-compat.js"></script>
     <style>
+        /* STYLE SAMA PERSIS DENGAN SEBELUMNYA */
+        /* ... semua style tetap sama ... */
         :root {
-            --primary: #000000;
+            --primary: #d1b11fd3;
             --secondary: #f4e4c1;
             --accent: #2e8b57;
             --text: #333;
@@ -53,16 +54,27 @@
             align-items: center;
         }
         
-        .logo {
-            font-size: 1.8rem;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-        }
-        
-        .logo i {
-            margin-right: 10px;
-        }
+        /* === RESPONSIVE SCALING LOGO === */
+.logo-img{
+    height:auto;
+    max-width: clamp(55px, 10vw, 130px); /* auto flexible */
+    transition: 0.3s ease; /* smooth scaling */
+}
+
+/* Mobile kontrol tambahan */
+@media(max-width:480px){
+    .logo-img{
+        max-width: clamp(48px, 12vw, 70px);
+    }
+}
+@media(min-width:1024px){
+    .logo-img:hover{
+        transform: scale(1.07);
+        filter: drop-shadow(0px 2px 6px rgba(0,0,0,0.25));
+    }
+}
+
+
         
         .cart-icon {
             position: relative;
@@ -920,6 +932,184 @@
         height: auto; /* Biarkan tinggi menyesuaikan secara otomatis */
         vertical-align: middle; /* Pusatkan gambar secara vertikal */
     }
+    
+    /* Default Desktop View */
+.hamburger { display:none; }
+.nav-menu ul { display:flex; gap:20px; }
+
+/* --- MOBILE MODE --- */
+@media (max-width: 768px) {
+    .header-content{
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        padding:10px 15px;
+    }
+
+    .logo img { max-width:60px; }
+
+    .hamburger {
+        display:block;
+        font-size:28px;
+        cursor:pointer;
+        padding:5px 10px;
+        user-select:none;
+    }
+
+    /* Nav disembunyikan awalnya */
+    .nav-menu {
+        display:none;
+        position:absolute;
+        top:60px;
+        right:0;
+        width:200px;
+        background:#000;
+        padding:15px;
+        border-radius:10px 0 0 10px;
+        z-index:999;
+    }
+
+    .nav-menu.active { display:block; }
+
+    .nav-menu ul{
+        display:block;
+    }
+
+    .nav-menu ul li{
+        margin:12px 0;
+    }
+
+    .nav-menu ul li a{
+        color:#fff;
+        font-size:1rem;
+        padding:6px 0;
+        display:block;
+    }
+}
+
+/* DESKTOP tetap normal */
+.header-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+/* MOBILE STYLE */
+@media(max-width:768px){
+
+    header{ padding:10px; }
+
+    .header-row{
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap:10px;
+    }
+
+    .logo-img{
+        width:55px;
+    }
+
+    .hamburger{
+        font-size:28px;
+        cursor:pointer;
+        padding:5px 10px;
+        user-select:none;
+    }
+
+    .right-group{
+        display:flex;
+        align-items:center;
+        gap:12px;
+        font-size:20px;
+    }
+
+    .qr-icon{ font-size:18px; }
+    .cart-icon{ font-size:20px; }
+
+    /* NAV dropdown saat hamburger diklik */
+    .nav-menu{
+        display:none;
+        background:#000;
+        padding:15px;
+    }
+    .nav-menu.active{ display:block; }
+    .nav-menu ul li{ margin:12px 0; }
+    .nav-menu ul a{ color:#fff; display:block; }
+
+    /*kode baru
+    /* ================= MOBILE ================= */
+@media(max-width: 768px){
+
+    /* HIDE MENU DESKTOP SAAT MOBILE */
+    .nav-desktop{
+        display:none !important;
+    }
+
+    /* Tampilkan menu hamburger */
+    .hamburger{
+        display:block;
+    }
+}
+
+}
+/* ================== DESKTOP VIEW ================== */
+@media(min-width: 769px){
+
+    .header-row{
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap:25px;
+        padding:12px 5px;
+    }
+
+    /* NAV DESKTOP TENGAH */
+    .nav-desktop{
+        display:flex;
+        flex-grow:1;
+        justify-content:center; /* teks Berada Menu Keranjang Admin berada di tengah */
+    }
+    .nav-desktop ul{
+        display:flex;
+        gap:30px; /* jarak proporsional antar item menu */
+        list-style:none;
+    }
+    .nav-desktop a{
+        font-size:1.05rem;
+        font-weight:500;
+        color:white;
+        padding:6px 4px;
+        transition:0.2s;
+    }
+    .nav-desktop a:hover{
+        opacity:0.7;
+    }
+
+    /* QRIS + IKON KERANJANG SEBELAH KANAN */
+    .right-group{
+        display:flex;
+        align-items:center;
+        gap:18px;
+        font-size:20px;
+        margin-right:20px; /* 🔥 geser keranjang dari sisi kanan */
+    }
+
+    /* HAMBURGER DISABLE DI DESKTOP */
+    .hamburger{ display:none; }
+
+    /* LOGO RESPONSIVE SCALE (dari perintah sebelumnya tetap dipakai) */
+    .logo-img{
+        max-width: clamp(80px, 7vw, 130px);
+        height:auto;
+        margin-left:20px; /* 🔥 geser logo ke kanan */
+    }
+
+    /* Sembunyikan menu mobile di desktop */
+    .nav-menu{ display:none !important; }
+}
+
+
     </style>
 </head>
 <body>
@@ -929,30 +1119,50 @@
         <div id="loadingText">Loading...</div>
     </div>
 
+    <!-- HEADER DAN SEMUA ELEMENT HTML LAINNYA SAMA -->
+    <!-- ... semua HTML tetap sama ... -->
     <header>
-        <div class="container header-content">
-            <div class="logo">
-                <img src="logo_HF.png" alt="Logo HOME FOODIE">
-            </div>
-            <nav>
-                <ul>
-                    <li><a href="#" class="nav-link" data-target="home">Beranda</a></li>
-                    <li><a href="#" class="nav-link" data-target="menu">Menu</a></li>
-                    <li><a href="#" class="nav-link" data-target="cart">Keranjang</a></li>
-                    <li><a href="#" class="nav-link" data-target="admin">Admin</a></li>
-                </ul>
-            </nav>
-            <div class="header-icons">
-                <!-- Tombol QRIS baru -->
-                <div class="qr-icon" id="qrisIcon">
-                    💳 QRIS
-                </div>
-                <div class="cart-icon" id="cartIcon">
-                    🛒 <span class="cart-count" id="cartCount">0</span>
-                </div>
-            </div>
+    <div class="container header-row">
+
+        <!-- KIRI -->
+        <div class="left-group">
+            <img src="logo_HF.png" class="logo-img">
         </div>
-    </header>
+
+        <!-- MENU NAV (TAMPIL DI DESKTOP) -->
+        <nav class="nav-desktop">
+            <ul>
+                <li><a class="nav-link" data-target="home">Beranda</a></li>
+                <li><a class="nav-link" data-target="menu">Menu</a></li>
+                <li><a class="nav-link" data-target="cart">Keranjang</a></li>
+                <li><a class="nav-link" data-target="admin">Admin</a></li>
+            </ul>
+        </nav>
+
+        <!-- KANAN -->
+        <div class="right-group">
+            <div class="qr-icon" id="qrisIcon">💳</div>
+            <div class="cart-icon" id="cartIcon">🛒<span class="cart-count" id="cartCount">0</span></div>
+        </div>
+
+        <!-- HAMBURGER (MUNCUL HANYA MOBILE) -->
+        <div id="hamburgerMenu" class="hamburger">☰</div>
+
+    </div>
+
+    <!-- MENU MOBILE DROP -->
+    <nav id="mobileNav" class="nav-menu">
+        <ul>
+            <li><a class="nav-link" data-target="home">Beranda</a></li>
+            <li><a class="nav-link" data-target="menu">Menu</a></li>
+            <li><a class="nav-link" data-target="cart">Keranjang</a></li>
+            <li><a class="nav-link" data-target="admin">Admin</a></li>
+        </ul>
+    </nav>
+</header>
+
+
+
 
     <div class="container">
         <!-- Home Section -->
@@ -1808,7 +2018,7 @@
     <footer>
         <div class="container footer-content">
             <div class="logo">
-                <i>🥟</i> Tahu Bakso Enak
+                <i></i> Home Foodie
             </div>
             <p>Pesan tahu bakso lezat dengan mudah dan cepat</p>
             <div class="footer-links">
@@ -1816,13 +2026,12 @@
                 <a href="#" class="nav-link" data-target="menu">Menu</a>
                 <a href="#" class="nav-link" data-target="cart">Keranjang</a>
             </div>
-            <p>&copy; 2023 Tahu Bakso Enak. All rights reserved.</p>
+            <p>&copy; 2023 Home Foodie. All rights reserved.</p>
         </div>
     </footer>
 
     <script>
         // ============ KONFIGURASI FIREBASE ============
-        // GANTI DENGAN KONFIGURASI FIREBASE ANDA
         const firebaseConfig = {
             apiKey: "AIzaSyA7fwmx49XizBCuFi4IwIEEe1PIyvdKDec",
             authDomain: "homefoodie-89d87.firebaseapp.com",
@@ -1832,13 +2041,11 @@
             messagingSenderId: "726510009376",
             appId: "1:726510009376:web:2a0d79fa3556ce28a0d045",
             measurementId: "G-VDVJ5V5FPY"
-
         };
 
-        // Inisialisasi Firebase
+        // Inisialisasi Firebase dengan Realtime Database
         firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-        const auth = firebase.auth();
+        const database = firebase.database();
 
         // ============ VARIABEL GLOBAL ============
         let cart = JSON.parse(localStorage.getItem('tahuBaksoCart')) || [];
@@ -1848,7 +2055,6 @@
             password: 'tahu123'
         };
         
-        // Data untuk Mix 1
         let mix1Selection = {
             keju: { qty: 2, processing: 'frozen' },
             original: { qty: 0, processing: 'frozen' },
@@ -1856,14 +2062,12 @@
             rawit: { qty: 0, processing: 'frozen' }
         };
         
-        // Data untuk Mix 2
         let mix2Selection = {
             original: { qty: 0, processing: 'frozen' },
             sosis: { qty: 0, processing: 'frozen' },
             rawit: { qty: 0, processing: 'frozen' }
         };
         
-        // Data untuk single item
         let singleItem = {
             id: '',
             name: '',
@@ -1872,22 +2076,15 @@
             quantity: 1
         };
         
-        // Jumlah paket Mix 1 dan Mix 2
         let mix1PackageCount = 1;
         let mix2PackageCount = 1;
         
-        // Data QRIS dan rekening
         let paymentInfo = {
             qrisImage: '',
             bank: '',
             accountNumber: '',
             accountName: ''
         };
-        
-        // Variabel untuk filter tanggal
-        let dateFilter = { start: null, end: null };
-        let revenueDateFilter = { start: null, end: null };
-        let customerDateFilter = { start: null, end: null };
 
         // ============ FUNGSI HELPER ============
         
@@ -1939,7 +2136,19 @@
             return 'Rp ' + amount.toLocaleString('id-ID');
         }
         
-        // ============ FUNGSI FIREBASE ============
+        function formatDate(dateString) {
+            if (!dateString) return '-';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('id-ID', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+        
+        // ============ FUNGSI FIREBASE REALTIME DATABASE ============
         
         async function saveOrderToFirebase(name, phone, totalPrice) {
             try {
@@ -1951,14 +2160,15 @@
                     total_price: totalPrice,
                     items: cart,
                     status: 'pending',
-                    created_at: firebase.firestore.FieldValue.serverTimestamp(),
-                    updated_at: firebase.firestore.FieldValue.serverTimestamp()
+                    created_at: new Date().toISOString(),
+                    updated_at: new Date().toISOString()
                 };
                 
-                const docRef = await db.collection('orders').add(orderData);
+                const orderRef = database.ref('orders').push();
+                await orderRef.set(orderData);
                 
                 showNotification('Pesanan berhasil disimpan ke database!');
-                return docRef.id;
+                return orderRef.key;
             } catch (error) {
                 console.error('Error saving order:', error);
                 showNotification('Gagal menyimpan pesanan ke database');
@@ -1972,33 +2182,24 @@
             try {
                 showLoading('Memuat pesanan...');
                 
-                let query = db.collection('orders').orderBy('created_at', 'desc');
-                
-                // Filter tanggal jika ada
-                if (dateFilter.start || dateFilter.end) {
-                    if (dateFilter.start) {
-                        const startDate = new Date(dateFilter.start);
-                        startDate.setHours(0, 0, 0, 0);
-                        query = query.where('created_at', '>=', startDate);
-                    }
-                    if (dateFilter.end) {
-                        const endDate = new Date(dateFilter.end);
-                        endDate.setHours(23, 59, 59, 999);
-                        query = query.where('created_at', '<=', endDate);
-                    }
-                }
-                
-                const snapshot = await query.get();
+                const snapshot = await database.ref('orders').once('value');
+                const ordersData = snapshot.val();
                 const orders = [];
                 
-                snapshot.forEach(doc => {
-                    orders.push({
-                        id: doc.id,
-                        ...doc.data()
+                if (ordersData) {
+                    Object.keys(ordersData).forEach(key => {
+                        orders.push({
+                            id: key,
+                            ...ordersData[key]
+                        });
                     });
-                });
+                    
+                    // Urutkan berdasarkan tanggal terbaru
+                    orders.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+                    return orders;
+                }
                 
-                return orders;
+                return [];
             } catch (error) {
                 console.error('Error loading orders:', error);
                 showNotification('Gagal memuat pesanan');
@@ -2010,9 +2211,9 @@
         
         async function updateOrderStatus(orderId, status) {
             try {
-                await db.collection('orders').doc(orderId).update({
+                await database.ref(`orders/${orderId}`).update({
                     status: status,
-                    updated_at: firebase.firestore.FieldValue.serverTimestamp()
+                    updated_at: new Date().toISOString()
                 });
                 
                 showNotification(`Status pesanan diubah menjadi ${status}`);
@@ -2027,16 +2228,7 @@
         async function deleteAllOrders() {
             try {
                 showLoading('Menghapus semua data...');
-                
-                const snapshot = await db.collection('orders').get();
-                const batch = db.batch();
-                
-                snapshot.docs.forEach(doc => {
-                    batch.delete(doc.ref);
-                });
-                
-                await batch.commit();
-                
+                await database.ref('orders').remove();
                 showNotification('Semua data pesanan berhasil dihapus!');
                 return true;
             } catch (error) {
@@ -2050,14 +2242,8 @@
         
         async function loadSettingsFromFirebase() {
             try {
-                const snapshot = await db.collection('settings').get();
-                const settings = {};
-                
-                snapshot.forEach(doc => {
-                    settings[doc.id] = doc.data();
-                });
-                
-                return settings;
+                const snapshot = await database.ref('settings').once('value');
+                return snapshot.val() || {};
             } catch (error) {
                 console.error('Error loading settings:', error);
                 return {};
@@ -2066,17 +2252,7 @@
         
         async function saveSettingsToFirebase(settings) {
             try {
-                const batch = db.batch();
-                
-                for (const [key, value] of Object.entries(settings)) {
-                    const docRef = db.collection('settings').doc(key);
-                    batch.set(docRef, {
-                        ...value,
-                        updated_at: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-                }
-                
-                await batch.commit();
+                await database.ref('settings').set(settings);
                 showNotification('Pengaturan berhasil disimpan!');
                 return true;
             } catch (error) {
@@ -2106,7 +2282,6 @@
                 const row = document.createElement('tr');
                 const items = order.items || [];
                 const totalItems = items.reduce((total, item) => total + item.quantity, 0);
-                const createdDate = order.created_at ? order.created_at.toDate() : new Date();
                 
                 row.innerHTML = `
                     <td>${index + 1}</td>
@@ -2119,7 +2294,7 @@
                     </td>
                     <td>${totalItems}</td>
                     <td>${formatCurrency(order.total_price)}</td>
-                    <td>${createdDate.toLocaleString('id-ID')}</td>
+                    <td>${formatDate(order.created_at)}</td>
                     <td>
                         <span class="status-badge status-${order.status}">${getStatusText(order.status)}</span>
                     </td>
@@ -2135,13 +2310,12 @@
                 tableBody.appendChild(row);
             });
             
-            // Event listener untuk perubahan status
             document.querySelectorAll('.status-select').forEach(select => {
                 select.addEventListener('change', async function() {
                     const orderId = this.getAttribute('data-order-id');
                     const status = this.value;
                     await updateOrderStatus(orderId, status);
-                    loadOrders(); // Refresh tabel
+                    loadOrders();
                 });
             });
         }
@@ -2186,7 +2360,6 @@
             try {
                 const orders = await loadOrdersFromFirebase();
                 
-                // Inisialisasi objek untuk menghitung produksi
                 const production = {
                     keju: { kukus: 0, goreng: 0, frozen: 0, total: 0 },
                     original: { kukus: 0, goreng: 0, frozen: 0, total: 0 },
@@ -2194,12 +2367,10 @@
                     rawit: { kukus: 0, goreng: 0, frozen: 0, total: 0 }
                 };
                 
-                // Hitung produksi dari semua pesanan
                 orders.forEach(order => {
                     const items = order.items || [];
                     items.forEach(item => {
                         if (item.composition) {
-                            // Untuk paket Mix
                             if (item.composition.keju) {
                                 const comp = item.composition.keju;
                                 const qty = comp.qty;
@@ -2225,7 +2396,6 @@
                                 production.rawit.total += qty;
                             }
                         } else {
-                            // Untuk item single
                             const qty = item.quantity;
                             if (production[item.id]) {
                                 production[item.id][item.processing] += qty;
@@ -2235,7 +2405,6 @@
                     });
                 });
                 
-                // Update tampilan
                 updateProductionDisplay(production);
             } catch (error) {
                 console.error('Error loading production summary:', error);
@@ -2243,7 +2412,6 @@
         }
         
         function updateProductionDisplay(production) {
-            // Hitung total semua
             let totalAll = { kukus: 0, goreng: 0, frozen: 0, total: 0 };
             const types = ['keju', 'original', 'sosis', 'rawit'];
             
@@ -2254,23 +2422,19 @@
                 totalAll.total += production[type].total;
             });
             
-            // Update statistik total produksi
             document.getElementById('totalAllProduction').textContent = `${totalAll.total} pcs`;
             document.getElementById('totalKejuProduction').textContent = `${production.keju.total} pcs`;
             document.getElementById('totalOriginalProduction').textContent = `${production.original.total} pcs`;
             document.getElementById('totalSosisProduction').textContent = `${production.sosis.total} pcs`;
             document.getElementById('totalRawitProduction').textContent = `${production.rawit.total} pcs`;
             
-            // Update total di tabel
             document.getElementById('totalKukus').textContent = `${totalAll.kukus} pcs`;
             document.getElementById('totalGoreng').textContent = `${totalAll.goreng} pcs`;
             document.getElementById('totalFrozen').textContent = `${totalAll.frozen} pcs`;
             document.getElementById('grandTotal').textContent = `${totalAll.total} pcs`;
             
-            // Tampilkan baris total jika ada data
             document.getElementById('productionTotalRow').style.display = totalAll.total > 0 ? 'table-row' : 'none';
             
-            // Tampilkan summary di tabel
             const summaryBody = document.getElementById('productionSummary');
             summaryBody.innerHTML = '';
             
@@ -2294,13 +2458,227 @@
             });
         }
         
+        // ============ FUNGSI REKAPAN PENDAPATAN ============
+        
+        async function loadRevenueSummary() {
+            try {
+                const orders = await loadOrdersFromFirebase();
+                
+                // Hitung statistik
+                let totalRevenue = 0;
+                let totalTransactions = orders.length;
+                let totalItemsSold = 0;
+                
+                orders.forEach(order => {
+                    if (order.status !== 'cancelled') {
+                        totalRevenue += order.total_price;
+                        const items = order.items || [];
+                        items.forEach(item => {
+                            totalItemsSold += item.quantity;
+                        });
+                    }
+                });
+                
+                const averageTransaction = totalTransactions > 0 ? totalRevenue / totalTransactions : 0;
+                
+                // Update tampilan
+                document.getElementById('totalRevenue').textContent = formatCurrency(totalRevenue);
+                document.getElementById('totalTransactions').textContent = totalTransactions;
+                document.getElementById('averageTransaction').textContent = formatCurrency(averageTransaction);
+                document.getElementById('totalItemsSold').textContent = `${totalItemsSold} pcs`;
+                
+                // Tampilkan detail transaksi
+                const revenueTableBody = document.getElementById('revenueTableBody');
+                revenueTableBody.innerHTML = '';
+                
+                if (orders.length === 0) {
+                    document.getElementById('noRevenue').style.display = 'block';
+                } else {
+                    document.getElementById('noRevenue').style.display = 'none';
+                    orders.forEach((order, index) => {
+                        const items = order.items || [];
+                        const totalItems = items.reduce((total, item) => total + item.quantity, 0);
+                        
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${index + 1}</td>
+                            <td>${order.customer_name}</td>
+                            <td>${order.customer_phone}</td>
+                            <td>${formatDate(order.created_at)}</td>
+                            <td>${totalItems}</td>
+                            <td>${formatCurrency(order.total_price)}</td>
+                        `;
+                        revenueTableBody.appendChild(row);
+                    });
+                }
+                
+                // Tampilkan ringkasan harian
+                const dailySummary = document.getElementById('dailyRevenueSummary');
+                dailySummary.innerHTML = '';
+                
+                // Kelompokkan per hari
+                const dailyData = {};
+                orders.forEach(order => {
+                    if (order.status !== 'cancelled') {
+                        const date = new Date(order.created_at).toLocaleDateString('id-ID');
+                        if (!dailyData[date]) {
+                            dailyData[date] = {
+                                revenue: 0,
+                                transactions: 0,
+                                items: 0
+                            };
+                        }
+                        dailyData[date].revenue += order.total_price;
+                        dailyData[date].transactions += 1;
+                        const items = order.items || [];
+                        items.forEach(item => {
+                            dailyData[date].items += item.quantity;
+                        });
+                    }
+                });
+                
+                // Tampilkan per hari
+                for (const [date, data] of Object.entries(dailyData)) {
+                    const dailyDiv = document.createElement('div');
+                    dailyDiv.style.cssText = 'background-color: white; padding: 1rem; border-radius: 6px; margin-bottom: 1rem; border: 1px solid #eee;';
+                    dailyDiv.innerHTML = `
+                        <h5 style="margin-bottom: 0.5rem; color: var(--primary);">${date}</h5>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px;">
+                            <div>
+                                <div class="stat-label">Pendapatan</div>
+                                <div class="stat-value">${formatCurrency(data.revenue)}</div>
+                            </div>
+                            <div>
+                                <div class="stat-label">Transaksi</div>
+                                <div class="stat-value">${data.transactions}</div>
+                            </div>
+                            <div>
+                                <div class="stat-label">Item Terjual</div>
+                                <div class="stat-value">${data.items} pcs</div>
+                            </div>
+                        </div>
+                    `;
+                    dailySummary.appendChild(dailyDiv);
+                }
+            } catch (error) {
+                console.error('Error loading revenue summary:', error);
+                showNotification('Gagal memuat rekapan pendapatan');
+            }
+        }
+        
+        // ============ FUNGSI REKAPAN PESANAN CUSTOMER ============
+        
+        async function loadCustomerOrdersSummary() {
+            try {
+                const orders = await loadOrdersFromFirebase();
+                
+                // Kelompokkan per customer
+                const customers = {};
+                
+                orders.forEach(order => {
+                    const key = `${order.customer_name}|${order.customer_phone}`;
+                    if (!customers[key]) {
+                        customers[key] = {
+                            name: order.customer_name,
+                            phone: order.customer_phone,
+                            totalOrders: 0,
+                            totalItems: 0,
+                            totalRevenue: 0,
+                            orders: []
+                        };
+                    }
+                    customers[key].totalOrders += 1;
+                    customers[key].totalRevenue += order.total_price;
+                    const items = order.items || [];
+                    let totalItems = 0;
+                    items.forEach(item => {
+                        totalItems += item.quantity;
+                    });
+                    customers[key].totalItems += totalItems;
+                    customers[key].orders.push(order);
+                });
+                
+                // Update statistik
+                const totalCustomers = Object.keys(customers).length;
+                const totalCustomerOrders = orders.length;
+                let totalCustomerItems = 0;
+                let totalCustomerRevenue = 0;
+                
+                Object.values(customers).forEach(customer => {
+                    totalCustomerItems += customer.totalItems;
+                    totalCustomerRevenue += customer.totalRevenue;
+                });
+                
+                document.getElementById('totalCustomers').textContent = totalCustomers;
+                document.getElementById('totalCustomerOrders').textContent = totalCustomerOrders;
+                document.getElementById('totalCustomerItems').textContent = `${totalCustomerItems} pcs`;
+                document.getElementById('totalCustomerRevenue').textContent = formatCurrency(totalCustomerRevenue);
+                
+                // Tampilkan daftar customer
+                const customerOrdersList = document.getElementById('customerOrdersList');
+                customerOrdersList.innerHTML = '';
+                
+                if (totalCustomers === 0) {
+                    customerOrdersList.innerHTML = '<p style="text-align: center; padding: 2rem;">Belum ada data customer.</p>';
+                } else {
+                    for (const [key, customer] of Object.entries(customers)) {
+                        const customerCard = document.createElement('div');
+                        customerCard.className = 'customer-card';
+                        
+                        let ordersDetails = '';
+                        customer.orders.forEach((order, index) => {
+                            const items = order.items || [];
+                            let orderDetails = '';
+                            items.forEach(item => {
+                                orderDetails += `<div>${item.name} (${item.quantity}): ${formatCurrency(item.price * item.quantity)}</div>`;
+                            });
+                            
+                            ordersDetails += `
+                                <div style="margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px dashed #ddd;">
+                                    <div><strong>Pesanan ${index + 1}</strong> (${formatDate(order.created_at)})</div>
+                                    <div>Status: <span class="status-badge status-${order.status}">${getStatusText(order.status)}</span></div>
+                                    <div>Total: ${formatCurrency(order.total_price)}</div>
+                                    ${orderDetails}
+                                </div>
+                            `;
+                        });
+                        
+                        customerCard.innerHTML = `
+                            <h4>${customer.name} - ${customer.phone}</h4>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-top: 1rem;">
+                                <div>
+                                    <div class="stat-label">Total Pesanan</div>
+                                    <div class="stat-value">${customer.totalOrders}</div>
+                                </div>
+                                <div>
+                                    <div class="stat-label">Total Item</div>
+                                    <div class="stat-value">${customer.totalItems} pcs</div>
+                                </div>
+                                <div>
+                                    <div class="stat-label">Total Belanja</div>
+                                    <div class="stat-value">${formatCurrency(customer.totalRevenue)}</div>
+                                </div>
+                            </div>
+                            <div class="customer-orders-details">
+                                <h5 style="margin-bottom: 1rem; color: var(--accent);">Detail Pesanan:</h5>
+                                ${ordersDetails}
+                            </div>
+                        `;
+                        customerOrdersList.appendChild(customerCard);
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading customer orders summary:', error);
+                showNotification('Gagal memuat rekapan pesanan customer');
+            }
+        }
+        
         // ============ INISIALISASI ============
         
         async function init() {
             try {
                 showLoading('Memuat data...');
                 
-                // Load settings dari Firebase
                 const settings = await loadSettingsFromFirebase();
                 
                 if (settings.admin_credentials) {
@@ -2312,10 +2690,8 @@
                     loadPaymentInfo();
                 }
                 
-                // Cek login status
                 isAdminLoggedIn = localStorage.getItem('adminLoggedIn') === 'true';
                 
-                // Update cart count
                 updateCartCount();
                 
                 hideLoading();
@@ -2334,7 +2710,6 @@
         }
         
         function addToCart(itemId, name, price, quantity = 1, description = '', composition = null, processing = '') {
-            // Cek apakah item sudah ada di keranjang dengan komposisi dan pengolahan yang sama
             const existingItemIndex = cart.findIndex(item => {
                 if (item.id !== itemId) return false;
                 if (composition) {
@@ -2344,10 +2719,8 @@
             });
             
             if (existingItemIndex !== -1) {
-                // Jika sudah ada, tambahkan jumlahnya
                 cart[existingItemIndex].quantity += quantity;
             } else {
-                // Jika belum ada, tambahkan item baru
                 const newItem = {
                     id: itemId,
                     name: name,
@@ -2365,10 +2738,8 @@
                 cart.push(newItem);
             }
             
-            // Simpan ke localStorage
             localStorage.setItem('tahuBaksoCart', JSON.stringify(cart));
             
-            // Update tampilan
             updateCartCount();
             showNotification(`${name} ${quantity > 1 ? `(${quantity}) ` : ''}ditambahkan ke keranjang`);
         }
@@ -2388,7 +2759,6 @@
                 return;
             }
             
-            // Tampilkan item keranjang
             let cartItemsHTML = '';
             let summaryHTML = '';
             let totalPrice = 0;
@@ -2399,7 +2769,6 @@
                 
                 let details = '';
                 if (item.composition) {
-                    // Untuk paket Mix, tampilkan komposisi detail
                     if (item.composition.keju) {
                         details += `${item.composition.keju.qty} pcs keju ${item.composition.keju.processing}<br>`;
                     }
@@ -2413,7 +2782,6 @@
                         details += `${item.composition.rawit.qty} pcs rawit ${item.composition.rawit.processing}<br>`;
                     }
                 } else if (item.processing) {
-                    // Untuk item single, tampilkan pengolahan
                     details += `Pengolahan: ${item.processing}`;
                 }
                 
@@ -2446,7 +2814,6 @@
             document.getElementById('cartTotal').textContent = formatCurrency(totalPrice);
             cartSummary.style.display = 'block';
             
-            // Tambahkan event listener untuk tombol hapus
             document.querySelectorAll('.remove-from-cart').forEach(button => {
                 button.addEventListener('click', function() {
                     const index = parseInt(this.getAttribute('data-index'));
@@ -2477,7 +2844,6 @@
             const accountName = document.getElementById('accountName');
             const copyAccountBtn = document.getElementById('copyAccountBtn');
             
-            // Tampilkan QRIS jika ada
             if (paymentInfo.qrisImage) {
                 qrisImage.src = paymentInfo.qrisImage;
                 qrisImage.style.display = 'block';
@@ -2487,7 +2853,6 @@
                 qrisPlaceholder.style.display = 'block';
             }
             
-            // Tampilkan informasi rekening
             if (paymentInfo.bank) {
                 bankInfo.textContent = `Bank: ${paymentInfo.bank}`;
                 accountNumber.textContent = `No. Rekening: ${paymentInfo.accountNumber}`;
@@ -2559,7 +2924,7 @@
             showNotification('Logout berhasil!');
         });
         
-        // Checkout
+        // Checkout - FIXED: WhatsApp tidak berjalan
         document.getElementById('checkoutForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
@@ -2568,6 +2933,11 @@
             
             if (cart.length === 0) {
                 showNotification('Keranjang belanja masih kosong');
+                return;
+            }
+            
+            if (!name || !phone) {
+                showNotification('Harap isi nama dan nomor WhatsApp');
                 return;
             }
             
@@ -2581,7 +2951,7 @@
             const savedOrderId = await saveOrderToFirebase(name, phone, totalPrice);
             
             if (savedOrderId) {
-                // Kirim ke WhatsApp
+                // Buat pesan untuk WhatsApp
                 let message = `Halo, saya ingin memesan tahu bakso:\n\n`;
                 message += `Nama: ${name}\n`;
                 message += `No. WhatsApp: ${phone}\n\n`;
@@ -2589,31 +2959,34 @@
                 
                 cart.forEach(item => {
                     const itemTotal = item.price * item.quantity;
-                    message += `- ${item.name}${item.quantity > 1 ? ` (${item.quantity} paket)` : ''}: ${formatCurrency(itemTotal)}\n`;
+                    message += `- ${item.name}${item.quantity > 1 ? ` (${item.quantity})` : ''}: ${formatCurrency(itemTotal)}\n`;
                     
                     if (item.composition) {
                         if (item.composition.keju) {
-                            message += `  ${item.composition.keju.qty} pcs keju ${item.composition.keju.processing}\n`;
+                            message += `  - ${item.composition.keju.qty} pcs keju (${item.composition.keju.processing})\n`;
                         }
                         if (item.composition.original) {
-                            message += `  ${item.composition.original.qty} pcs original ${item.composition.original.processing}\n`;
+                            message += `  - ${item.composition.original.qty} pcs original (${item.composition.original.processing})\n`;
                         }
                         if (item.composition.sosis) {
-                            message += `  ${item.composition.sosis.qty} pcs sosis ${item.composition.sosis.processing}\n`;
+                            message += `  - ${item.composition.sosis.qty} pcs sosis (${item.composition.sosis.processing})\n`;
                         }
                         if (item.composition.rawit) {
-                            message += `  ${item.composition.rawit.qty} pcs rawit ${item.composition.rawit.processing}\n`;
+                            message += `  - ${item.composition.rawit.qty} pcs rawit (${item.composition.rawit.processing})\n`;
                         }
                     } else if (item.processing) {
-                        message += `  Pengolahan: ${item.processing}\n`;
+                        message += `  - Pengolahan: ${item.processing}\n`;
                     }
                 });
                 
                 message += `\n**TOTAL: ${formatCurrency(totalPrice)}**\n`;
-                message += `\n\nTerima kasih!`;
+                message += `\nTerima kasih!`;
                 
+                // Encode message untuk URL
                 const encodedMessage = encodeURIComponent(message);
-                const sellerPhone = "6285697648627";
+                
+                // Nomor WhatsApp - GANTI DENGAN NOMOR ANDA
+                const sellerPhone = "6285697648627"; // Ganti dengan nomor WhatsApp penjual 628999158937
                 
                 // Reset keranjang
                 cart = [];
@@ -2625,8 +2998,10 @@
                 document.getElementById('checkoutModal').style.display = 'none';
                 this.reset();
                 
-                // Redirect ke WhatsApp
+                // Redirect ke WhatsApp - FIXED: URL yang benar
                 window.open(`https://wa.me/${sellerPhone}?text=${encodedMessage}`, '_blank');
+                
+                showNotification('Pesanan berhasil dikirim ke WhatsApp!');
             }
         });
         
@@ -2635,17 +3010,120 @@
             loadOrders();
         });
         
-        // Tombol Clear Orders
+        // Tombol Clear Orders - FIXED: Tidak berfungsi
         document.getElementById('clearOrders').addEventListener('click', async function() {
-            if (confirm('Apakah Anda yakin ingin menghapus semua data pesanan?')) {
-                await deleteAllOrders();
-                loadOrders();
+            if (confirm('Apakah Anda yakin ingin menghapus SEMUA data pesanan? Tindakan ini tidak dapat dibatalkan!')) {
+                const success = await deleteAllOrders();
+                if (success) {
+                    loadOrders();
+                }
             }
+        });
+        
+        // Tombol Export Orders
+        document.getElementById('exportOrders').addEventListener('click', function() {
+            const ordersTable = document.getElementById('ordersTable');
+            let csv = 'No,Nama,No WhatsApp,Pesanan,Jumlah,Total,Waktu,Status\n';
+            
+            const rows = ordersTable.querySelectorAll('tr');
+            rows.forEach((row, index) => {
+                if (index > 0) { // Skip header
+                    const cols = row.querySelectorAll('td');
+                    if (cols.length > 0) {
+                        const rowData = [];
+                        cols.forEach((col, colIndex) => {
+                            // Skip kolom terakhir (Aksi)
+                            if (colIndex < cols.length - 1) {
+                                let text = col.textContent.trim();
+                                // Handle pesanan multi-line
+                                if (colIndex === 3) {
+                                    text = text.replace(/\n/g, '; ');
+                                }
+                                // Enclose in quotes if contains comma
+                                if (text.includes(',')) {
+                                    text = `"${text}"`;
+                                }
+                                rowData.push(text);
+                            }
+                        });
+                        csv += rowData.join(',') + '\n';
+                    }
+                }
+            });
+            
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `orders_${new Date().toISOString().split('T')[0]}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+            
+            showNotification('Data berhasil diekspor ke CSV');
         });
         
         // Tombol Refresh Production
         document.getElementById('refreshProduction').addEventListener('click', function() {
             loadProductionSummary();
+        });
+        
+        // Tombol Print Production
+        document.getElementById('printProduction').addEventListener('click', function() {
+            window.print();
+        });
+        
+        // Tombol Refresh Revenue
+        document.getElementById('refreshRevenue').addEventListener('click', function() {
+            loadRevenueSummary();
+        });
+        
+        // Tombol Print Revenue
+        document.getElementById('printRevenue').addEventListener('click', function() {
+            window.print();
+        });
+        
+        // Tombol Refresh Customer Orders
+        document.getElementById('refreshCustomerOrders').addEventListener('click', function() {
+            loadCustomerOrdersSummary();
+        });
+        
+        // Tombol Export Customer Orders
+        document.getElementById('exportCustomerOrders').addEventListener('click', function() {
+            const customers = document.querySelectorAll('.customer-card');
+            if (customers.length === 0) {
+                showNotification('Tidak ada data customer untuk diekspor');
+                return;
+            }
+            
+            let csv = 'Nama,No WhatsApp,Total Pesanan,Total Item,Total Belanja\n';
+            
+            customers.forEach(card => {
+                const name = card.querySelector('h4').textContent.split(' - ')[0];
+                const phone = card.querySelector('h4').textContent.split(' - ')[1];
+                const stats = card.querySelectorAll('.stat-value');
+                
+                if (stats.length >= 3) {
+                    const totalOrders = stats[0].textContent;
+                    const totalItems = stats[1].textContent.replace(' pcs', '');
+                    const totalRevenue = stats[2].textContent.replace('Rp ', '').replace(/\./g, '');
+                    
+                    csv += `"${name}","${phone}",${totalOrders},${totalItems},${totalRevenue}\n`;
+                }
+            });
+            
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `customers_${new Date().toISOString().split('T')[0]}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+            
+            showNotification('Data customer berhasil diekspor ke CSV');
         });
         
         // Icon keranjang
@@ -2700,7 +3178,6 @@
                 
                 let details = '';
                 if (item.composition) {
-                    // Untuk paket Mix
                     if (item.composition.keju) {
                         details += `<small>${item.composition.keju.qty} pcs keju ${item.composition.keju.processing}</small><br>`;
                     }
@@ -2714,7 +3191,6 @@
                         details += `<small>${item.composition.rawit.qty} pcs rawit ${item.composition.rawit.processing}</small><br>`;
                     }
                 } else if (item.processing) {
-                    // Untuk item single
                     details += `<small>Pengolahan: ${item.processing}</small>`;
                 }
                 
@@ -2745,13 +3221,14 @@
             document.getElementById('adminContent').style.display = 'block';
             loadOrders();
             loadProductionSummary();
+            loadRevenueSummary();
+            loadCustomerOrdersSummary();
             loadQrisSettings();
             displayCurrentAdminInfo();
         }
         
         function displayCurrentAdminInfo() {
             document.getElementById('currentUsername').textContent = `Username: ${adminCredentials.username}`;
-            // Reset form
             document.getElementById('newUsername').value = '';
             document.getElementById('newPassword').value = '';
             document.getElementById('confirmPassword').value = '';
@@ -2779,35 +3256,36 @@
             tab.addEventListener('click', function() {
                 const tabId = this.getAttribute('data-tab');
                 
-                // Hapus kelas active dari semua tab
                 document.querySelectorAll('.admin-tab').forEach(t => {
                     t.classList.remove('active');
                 });
                 
-                // Hapus kelas active dari semua konten tab
                 document.querySelectorAll('.admin-tab-content').forEach(content => {
                     content.classList.remove('active');
                 });
                 
-                // Tambahkan kelas active ke tab yang diklik
                 this.classList.add('active');
-                
-                // Tampilkan konten tab yang sesuai
                 document.getElementById(tabId + 'Tab').classList.add('active');
                 
-                // Jika tab settings yang diklik, tampilkan info akun saat ini
-                if (tabId === 'settings' && isAdminLoggedIn) {
-                    displayCurrentAdminInfo();
-                }
-                
-                // Jika tab qris yang diklik, load data qris
-                if (tabId === 'qris' && isAdminLoggedIn) {
-                    loadQrisSettings();
-                }
-                
-                // Jika tab production yang diklik, load data production
-                if (tabId === 'production' && isAdminLoggedIn) {
-                    loadProductionSummary();
+                // Load data sesuai tab
+                if (isAdminLoggedIn) {
+                    switch(tabId) {
+                        case 'settings':
+                            displayCurrentAdminInfo();
+                            break;
+                        case 'qris':
+                            loadQrisSettings();
+                            break;
+                        case 'production':
+                            loadProductionSummary();
+                            break;
+                        case 'revenue':
+                            loadRevenueSummary();
+                            break;
+                        case 'customer-orders':
+                            loadCustomerOrdersSummary();
+                            break;
+                    }
                 }
             });
         });
@@ -2819,18 +3297,18 @@
             const bankAccountNumber = document.getElementById('bankAccountNumber').value.trim();
             const bankAccountName = document.getElementById('bankAccountName').value.trim();
             
-            // Update paymentInfo
             paymentInfo.qrisImage = qrisImageUrl;
             paymentInfo.bank = bankName;
             paymentInfo.accountNumber = bankAccountNumber;
             paymentInfo.accountName = bankAccountName;
             
-            // Save to Firebase
-            await saveSettingsToFirebase({
+            const settings = {
+                admin_credentials: adminCredentials,
                 payment_info: paymentInfo
-            });
+            };
             
-            // Update preview
+            await saveSettingsToFirebase(settings);
+            
             const preview = document.getElementById('previewQrisImage');
             const previewContainer = document.getElementById('qrisPreview');
             
@@ -2841,7 +3319,6 @@
                 previewContainer.style.display = 'none';
             }
             
-            // Update modal QRIS
             loadPaymentInfo();
         });
         
@@ -2851,7 +3328,6 @@
             const newPassword = document.getElementById('newPassword').value;
             const confirmPassword = document.getElementById('confirmPassword').value;
             
-            // Validasi
             if (!newUsername && !newPassword) {
                 showNotification('Masukkan username atau password baru');
                 return;
@@ -2862,7 +3338,6 @@
                 return;
             }
             
-            // Update credentials
             if (newUsername) {
                 adminCredentials.username = newUsername;
             }
@@ -2871,12 +3346,13 @@
                 adminCredentials.password = newPassword;
             }
             
-            // Save to Firebase
-            await saveSettingsToFirebase({
-                admin_credentials: adminCredentials
-            });
+            const settings = {
+                admin_credentials: adminCredentials,
+                payment_info: paymentInfo
+            };
             
-            // Update tampilan
+            await saveSettingsToFirebase(settings);
+            
             displayCurrentAdminInfo();
         });
         
@@ -2894,11 +3370,9 @@
             }
         });
 
-        // ============ MODAL HANDLERS (sama seperti sebelumnya) ============
+        // ============ MODAL HANDLERS ============
         
-        // Event delegation untuk tombol modal
         document.addEventListener('click', function(e) {
-            // Tombol "Pilih Komposisi" untuk Mix 1
             if (e.target.classList.contains('open-mix1-modal')) {
                 e.preventDefault();
                 document.getElementById('mix1Modal').style.display = 'flex';
@@ -2906,7 +3380,6 @@
                 updateMix1Display();
             }
             
-            // Tombol "Pilih Komposisi" untuk Mix 2
             if (e.target.classList.contains('open-mix2-modal')) {
                 e.preventDefault();
                 document.getElementById('mix2Modal').style.display = 'flex';
@@ -2914,7 +3387,6 @@
                 updateMix2Display();
             }
             
-            // Tombol "Pesan" untuk single item
             if (e.target.classList.contains('open-single-modal')) {
                 e.preventDefault();
                 singleItem.id = e.target.getAttribute('data-id');
@@ -2932,7 +3404,6 @@
             }
         });
 
-        // Fungsi untuk modal Mix 1
         function resetMix1Selection() {
             mix1Selection = {
                 keju: { qty: 2, processing: 'frozen' },
@@ -2991,7 +3462,6 @@
             }
         }
 
-        // Fungsi untuk modal Mix 2
         function resetMix2Selection() {
             mix2Selection = {
                 original: { qty: 0, processing: 'frozen' },
@@ -3043,13 +3513,11 @@
             }
         }
 
-        // Fungsi untuk modal single item
         function updateSinglePrice() {
             const totalPrice = singleItem.price * singleItem.quantity;
             document.getElementById('single-total-price').textContent = formatCurrency(totalPrice);
         }
 
-        // Event listeners untuk kontrol modal
         document.getElementById('closeMix1Modal').addEventListener('click', function() {
             document.getElementById('mix1Modal').style.display = 'none';
         });
@@ -3062,7 +3530,6 @@
             document.getElementById('singleModal').style.display = 'none';
         });
 
-        // Kontrol jumlah paket Mix 1
         document.getElementById('mix1-package-increase').addEventListener('click', function() {
             mix1PackageCount++;
             updateMix1Display();
@@ -3075,7 +3542,6 @@
             }
         });
 
-        // Kontrol jumlah paket Mix 2
         document.getElementById('mix2-package-increase').addEventListener('click', function() {
             mix2PackageCount++;
             updateMix2Display();
@@ -3088,7 +3554,6 @@
             }
         });
 
-        // Kontrol item dalam Mix 1
         document.querySelectorAll('.mix1-increase').forEach(button => {
             button.addEventListener('click', function() {
                 const type = this.getAttribute('data-type');
@@ -3107,7 +3572,6 @@
             });
         });
 
-        // Kontrol item dalam Mix 2
         document.querySelectorAll('.mix2-increase').forEach(button => {
             button.addEventListener('click', function() {
                 const type = this.getAttribute('data-type');
@@ -3126,7 +3590,6 @@
             });
         });
 
-        // Kontrol modal single item
         document.getElementById('single-increase').addEventListener('click', function() {
             singleItem.quantity++;
             document.getElementById('single-qty').value = singleItem.quantity;
@@ -3141,7 +3604,6 @@
             }
         });
 
-        // Tombol tambah ke keranjang
         document.getElementById('addMix1ToCart').addEventListener('click', function() {
             const totalPcs = mix1Selection.original.qty + mix1Selection.sosis.qty + mix1Selection.rawit.qty;
             const requiredPcs = mix1PackageCount * 8;
@@ -3231,7 +3693,6 @@
             document.getElementById('single-qty').value = '1';
         });
 
-        // Tutup modal jika klik di luar konten modal
         window.addEventListener('click', function(event) {
             const modals = ['checkoutModal', 'mix1Modal', 'mix2Modal', 'singleModal', 'qrisModal'];
             modals.forEach(modalId => {
@@ -3241,6 +3702,15 @@
                 }
             });
         });
+
+        // --- HAMBURGER MENU ---
+const hamburger = document.getElementById("hamburgerMenu");
+const navMenu = document.getElementById("mobileNav");
+
+hamburger.addEventListener("click", ()=> mobileNav.classList.toggle("active"))
+document.querySelectorAll(".nav-link").forEach(x => x.onclick=()=>mobileNav.classList.remove("active"))
+
+
     </script>
 </body>
 </html>
