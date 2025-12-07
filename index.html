@@ -1109,6 +1109,38 @@
     .nav-menu{ display:none !important; }
 }
 
+/* ================= TABLET MODE ================= */
+@media (min-width:769px) and (max-width:1024px){
+
+    .header-row{
+        padding:12px 10px;
+        gap:15px;
+    }
+
+    .logo-img{
+        max-width:80px;
+    }
+
+    /* Atur posisi QRIS & Keranjang agar tidak mepet dan tidak hilang */
+    .right-group{
+        gap:22px;         /* beri jarak antar ikon */
+        margin-right:10px; /* geser sedikit dari tepi kanan */
+        font-size:22px;
+        flex-shrink:0;
+    }
+
+    .qr-icon{ font-size:20px; padding:4px 8px; }
+    .cart-icon{ font-size:22px; }
+
+    /* Menu desktop tetap ada tapi mengecil agar ruang cukup */
+    .nav-desktop ul{
+        gap:18px;
+    }
+    .nav-desktop a{
+        font-size:0.95rem;
+        padding:4px;
+    }
+}
 
     </style>
 </head>
