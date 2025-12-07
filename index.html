@@ -2638,21 +2638,53 @@
                         
                         let ordersDetails = '';
                         customer.orders.forEach((order, index) => {
-                            const items = order.items || [];
-                            let orderDetails = '';
-                            items.forEach(item => {
-                                orderDetails += `<div>${item.name} (${item.quantity}): ${formatCurrency(item.price * item.quantity)}</div>`;
-                            });
-                            
-                            ordersDetails += `
-                                <div style="margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px dashed #ddd;">
-                                    <div><strong>Pesanan ${index + 1}</strong> (${formatDate(order.created_at)})</div>
-                                    <div>Status: <span class="status-badge status-${order.status}">${getStatusText(order.status)}</span></div>
-                                    <div>Total: ${formatCurrency(order.total_price)}</div>
-                                    ${orderDetails}
-                                </div>
-                            `;
-                        });
+    const items = order.items || [];
+    let orderDetails = '';
+
+    items.forEach(item => {
+        const itemSubtotal = (item.price || 0) * (item.quantity || 0);
+
+        orderDetails += `
+            <div style="margin:8px 0; padding:10px; border-radius:6px; background:#f7f7f7;">
+                <b>${item.name}</b> × ${item.quantity} <br>
+                Harga: ${formatCurrency(item.price)} /pcs <br>
+                Subtotal: <b>${formatCurrency(itemSubtotal)}</b>
+        `;
+
+        // tampilkan komposisi Mix 1/Mix 2 kalau ada
+        if (item.composition) {
+            orderDetails += `<div style="margin-top:6px;"><b>Komposisi:</b></div>`;
+            Object.keys(item.composition).forEach(typeKey => {
+                const c = item.composition[typeKey];
+                if (c.qty > 0) {
+                    const totalQty = c.qty * item.quantity;
+                    orderDetails += `
+                        <div style="margin-left:10px;">
+                            • ${typeKey} → ${c.qty} pcs/paket × ${item.quantity} = <b>${totalQty} pcs</b>
+                            ${c.processing ? `<br><small>Pengolahan: ${c.processing}</small>` : ""}
+                        </div>
+                    `;
+                }
+            });
+        } else if (item.processing) {
+            orderDetails += `<br><b>Pengolahan:</b> ${item.processing}`;
+        }
+
+        orderDetails += `</div>`;
+    });
+
+    ordersDetails += `
+        <div style="padding:15px; border:1px solid #ddd; border-radius:8px; margin-bottom:15px;">
+            <b>Pesanan #${index+1}</b><br>
+            Tanggal: ${formatDate(order.created_at)} <br>
+            Status: <span class="status-badge status-${order.status}">${getStatusText(order.status)}</span><br>
+            <b>Total Pembayaran: ${formatCurrency(order.total_price)}</b>
+            <div style="margin-top:10px;">${orderDetails}</div>
+        </div>
+    `;
+});
+
+
                         
                         customerCard.innerHTML = `
                             <h4>${customer.name} - ${customer.phone}</h4>
