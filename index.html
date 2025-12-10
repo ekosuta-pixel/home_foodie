@@ -2712,10 +2712,10 @@ function filterOrdersByDate(orders, startDate, endDate) {
             Object.keys(item.composition).forEach(typeKey => {
                 const c = item.composition[typeKey];
                 if (c.qty > 0) {
-                    const totalQty = c.qty * item.quantity;
+                    const totalQty = c.qty;
                     orderDetails += `
                         <div style="margin-left:10px;">
-                            • ${typeKey} → ${c.qty} pcs/paket × ${item.quantity} = <b>${totalQty} pcs</b>
+                            • ${typeKey}: <b>${totalQty} pcs</b>
                             ${c.processing ? `<br><small>Pengolahan: ${c.processing}</small>` : ""}
                         </div>
                     `;
