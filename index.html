@@ -2042,6 +2042,36 @@
     </footer>
 
     <script>
+        // Fungsi helper untuk filter tanggal
+function filterOrdersByDate(orders, startDate, endDate) {
+    if (!startDate && !endDate) return orders;
+    
+    return orders.filter(order => {
+        const orderDate = new Date(order.created_at);
+        
+        // Konversi tanggal input ke Date object
+        const start = startDate ? new Date(startDate) : null;
+        const end = endDate ? new Date(endDate) : null;
+        
+        // Reset waktu untuk perbandingan tanggal saja
+        const orderDateOnly = new Date(orderDate.getFullYear(), orderDate.getMonth(), orderDate.getDate());
+        const startOnly = start ? new Date(start.getFullYear(), start.getMonth(), start.getDate()) : null;
+        const endOnly = end ? new Date(end.getFullYear(), end.getMonth(), end.getDate()) : null;
+        
+        let isValid = true;
+        
+        if (startOnly && orderDateOnly < startOnly) {
+            isValid = false;
+        }
+        
+        if (endOnly && orderDateOnly > endOnly) {
+            isValid = false;
+        }
+        
+        return isValid;
+    });
+}
+
         // ============ KONFIGURASI FIREBASE ============
         const firebaseConfig = {
             apiKey: "AIzaSyA7fwmx49XizBCuFi4IwIEEe1PIyvdKDec",
@@ -2367,60 +2397,80 @@
             return details;
         }
         
-        async function loadProductionSummary() {
-            try {
-                const orders = await loadOrdersFromFirebase();
-                
-                const production = {
-                    keju: { kukus: 0, goreng: 0, frozen: 0, total: 0 },
-                    original: { kukus: 0, goreng: 0, frozen: 0, total: 0 },
-                    sosis: { kukus: 0, goreng: 0, frozen: 0, total: 0 },
-                    rawit: { kukus: 0, goreng: 0, frozen: 0, total: 0 }
-                };
-                
-                orders.forEach(order => {
-                    const items = order.items || [];
-                    items.forEach(item => {
-                        if (item.composition) {
-                            if (item.composition.keju) {
-                                const comp = item.composition.keju;
-                                const qty = comp.qty;
-                                production.keju[comp.processing] += qty;
-                                production.keju.total += qty;
-                            }
-                            if (item.composition.original) {
-                                const comp = item.composition.original;
-                                const qty = comp.qty;
-                                production.original[comp.processing] += qty;
-                                production.original.total += qty;
-                            }
-                            if (item.composition.sosis) {
-                                const comp = item.composition.sosis;
-                                const qty = comp.qty;
-                                production.sosis[comp.processing] += qty;
-                                production.sosis.total += qty;
-                            }
-                            if (item.composition.rawit) {
-                                const comp = item.composition.rawit;
-                                const qty = comp.qty;
-                                production.rawit[comp.processing] += qty;
-                                production.rawit.total += qty;
-                            }
-                        } else {
-                            const qty = item.quantity;
-                            if (production[item.id]) {
-                                production[item.id][item.processing] += qty;
-                                production[item.id].total += qty;
-                            }
-                        }
-                    });
-                });
-                
-                updateProductionDisplay(production);
-            } catch (error) {
-                console.error('Error loading production summary:', error);
-            }
+        async function loadProductionSummary(startDate = null, endDate = null) {
+    try {
+        const orders = await loadOrdersFromFirebase();
+        
+        // Filter berdasarkan tanggal jika ada
+        const filteredOrders = filterOrdersByDate(orders, startDate, endDate);
+        
+        const production = {
+            keju: { kukus: 0, goreng: 0, frozen: 0, total: 0 },
+            original: { kukus: 0, goreng: 0, frozen: 0, total: 0 },
+            sosis: { kukus: 0, goreng: 0, frozen: 0, total: 0 },
+            rawit: { kukus: 0, goreng: 0, frozen: 0, total: 0 }
+        };
+        
+        // Gunakan filteredOrders, bukan semua orders
+        filteredOrders.forEach(order => {
+            const items = order.items || [];
+            items.forEach(item => {
+                if (item.composition) {
+                    if (item.composition.keju) {
+                        const comp = item.composition.keju;
+                        const qty = comp.qty;
+                        production.keju[comp.processing] += qty;
+                        production.keju.total += qty;
+                    }
+                    if (item.composition.original) {
+                        const comp = item.composition.original;
+                        const qty = comp.qty;
+                        production.original[comp.processing] += qty;
+                        production.original.total += qty;
+                    }
+                    if (item.composition.sosis) {
+                        const comp = item.composition.sosis;
+                        const qty = comp.qty;
+                        production.sosis[comp.processing] += qty;
+                        production.sosis.total += qty;
+                    }
+                    if (item.composition.rawit) {
+                        const comp = item.composition.rawit;
+                        const qty = comp.qty;
+                        production.rawit[comp.processing] += qty;
+                        production.rawit.total += qty;
+                    }
+                } else {
+                    const qty = item.quantity;
+                    if (production[item.id]) {
+                        production[item.id][item.processing] += qty;
+                        production[item.id].total += qty;
+                    }
+                }
+            });
+        });
+        
+        updateProductionDisplay(production);
+        
+        // Tampilkan info filter
+        if (startDate || endDate) {
+            const filterInfo = document.createElement('div');
+            filterInfo.style.cssText = 'padding: 10px; background-color: #e9f7ef; border-radius: 5px; margin-bottom: 1rem; font-size: 0.9rem;';
+            filterInfo.innerHTML = `Menampilkan data dari: <strong>${startDate || 'Semua awal'}</strong> sampai <strong>${endDate || 'Sekarang'}</strong>`;
+            
+            // Hapus info filter sebelumnya jika ada
+            const existingInfo = document.querySelector('.filter-info');
+            if (existingInfo) existingInfo.remove();
+            
+            filterInfo.className = 'filter-info';
+            const productionTab = document.getElementById('productionTab');
+            productionTab.insertBefore(filterInfo, productionTab.firstChild);
         }
+        
+    } catch (error) {
+        console.error('Error loading production summary:', error);
+    }
+}
         
         function updateProductionDisplay(production) {
             let totalAll = { kukus: 0, goreng: 0, frozen: 0, total: 0 };
@@ -2471,25 +2521,27 @@
         
         // ============ FUNGSI REKAPAN PENDAPATAN ============
         
-        async function loadRevenueSummary() {
-            try {
-                const orders = await loadOrdersFromFirebase();
-                
-                // Hitung statistik
-                let totalRevenue = 0;
-                let totalTransactions = orders.length;
-                let totalItemsSold = 0;
-                
-                orders.forEach(order => {
-                    if (order.status !== 'cancelled') {
-                        totalRevenue += order.total_price;
-                        const items = order.items || [];
-                        items.forEach(item => {
-                            totalItemsSold += item.quantity;
-                        });
-                    }
+        async function loadRevenueSummary(startDate = null, endDate = null) {
+    try {
+        const orders = await loadOrdersFromFirebase();
+        
+        // Filter berdasarkan tanggal jika ada
+        const filteredOrders = filterOrdersByDate(orders, startDate, endDate);
+        
+        // Hitung statistik dari filteredOrders
+        let totalRevenue = 0;
+        let totalTransactions = filteredOrders.length;
+        let totalItemsSold = 0;
+        
+        filteredOrders.forEach(order => {
+            if (order.status !== 'cancelled') {
+                totalRevenue += order.total_price;
+                const items = order.items || [];
+                items.forEach(item => {
+                    totalItemsSold += item.quantity;
                 });
-                
+            }
+        });
                 const averageTransaction = totalTransactions > 0 ? totalRevenue / totalTransactions : 0;
                 
                 // Update tampilan
@@ -2579,14 +2631,17 @@
         
         // ============ FUNGSI REKAPAN PESANAN CUSTOMER ============
         
-        async function loadCustomerOrdersSummary() {
-            try {
-                const orders = await loadOrdersFromFirebase();
-                
-                // Kelompokkan per customer
-                const customers = {};
-                
-                orders.forEach(order => {
+        async function loadCustomerOrdersSummary(startDate = null, endDate = null) {
+    try {
+        const orders = await loadOrdersFromFirebase();
+        
+        // Filter berdasarkan tanggal jika ada
+        const filteredOrders = filterOrdersByDate(orders, startDate, endDate);
+        
+        // Kelompokkan per customer dari filteredOrders
+        const customers = {};
+        
+        filteredOrders.forEach(order => {
                     const key = `${order.customer_name}|${order.customer_phone}`;
                     if (!customers[key]) {
                         customers[key] = {
@@ -3665,19 +3720,19 @@
             
             if (mix1Selection.original.qty > 0) {
                 composition.original = { 
-                    qty: mix1Selection.original.qty * mix1PackageCount, 
+                    qty: mix1Selection.original.qty, 
                     processing: mix1Selection.original.processing 
                 };
             }
             if (mix1Selection.sosis.qty > 0) {
                 composition.sosis = { 
-                    qty: mix1Selection.sosis.qty * mix1PackageCount, 
+                    qty: mix1Selection.sosis.qty, 
                     processing: mix1Selection.sosis.processing 
                 };
             }
             if (mix1Selection.rawit.qty > 0) {
                 composition.rawit = { 
-                    qty: mix1Selection.rawit.qty * mix1PackageCount, 
+                    qty: mix1Selection.rawit.qty, 
                     processing: mix1Selection.rawit.processing 
                 };
             }
@@ -3700,19 +3755,19 @@
             
             if (mix2Selection.original.qty > 0) {
                 composition.original = { 
-                    qty: mix2Selection.original.qty * mix2PackageCount, 
+                    qty: mix2Selection.original.qty, 
                     processing: mix2Selection.original.processing 
                 };
             }
             if (mix2Selection.sosis.qty > 0) {
                 composition.sosis = { 
-                    qty: mix2Selection.sosis.qty * mix2PackageCount, 
+                    qty: mix2Selection.sosis.qty, 
                     processing: mix2Selection.sosis.processing 
                 };
             }
             if (mix2Selection.rawit.qty > 0) {
                 composition.rawit = { 
-                    qty: mix2Selection.rawit.qty * mix2PackageCount, 
+                    qty: mix2Selection.rawit.qty, 
                     processing: mix2Selection.rawit.processing 
                 };
             }
@@ -3753,6 +3808,63 @@ const navMenu = document.getElementById("mobileNav");
 hamburger.addEventListener("click", ()=> mobileNav.classList.toggle("active"))
 document.querySelectorAll(".nav-link").forEach(x => x.onclick=()=>mobileNav.classList.remove("active"))
 
+        // Event listener untuk filter produksi
+document.getElementById('applyDateFilter').addEventListener('click', function() {
+    const startDate = document.getElementById('startDate').value;
+    const endDate = document.getElementById('endDate').value;
+    loadProductionSummary(startDate, endDate);
+});
+
+document.getElementById('clearDateFilter').addEventListener('click', function() {
+    document.getElementById('startDate').value = '';
+    document.getElementById('endDate').value = '';
+    loadProductionSummary();
+});
+
+// Event listener untuk filter pendapatan
+document.getElementById('applyRevenueFilter').addEventListener('click', function() {
+    const startDate = document.getElementById('revenueStartDate').value;
+    const endDate = document.getElementById('revenueEndDate').value;
+    loadRevenueSummary(startDate, endDate);
+});
+
+document.getElementById('clearRevenueFilter').addEventListener('click', function() {
+    document.getElementById('revenueStartDate').value = '';
+    document.getElementById('revenueEndDate').value = '';
+    loadRevenueSummary();
+});
+
+// Event listener untuk filter customer
+document.getElementById('applyCustomerFilter').addEventListener('click', function() {
+    const startDate = document.getElementById('customerStartDate').value;
+    const endDate = document.getElementById('customerEndDate').value;
+    loadCustomerOrdersSummary(startDate, endDate);
+});
+
+document.getElementById('clearCustomerFilter').addEventListener('click', function() {
+    document.getElementById('customerStartDate').value = '';
+    document.getElementById('customerEndDate').value = '';
+    loadCustomerOrdersSummary();
+});
+
+// Set tanggal default ke hari ini
+function setDefaultDates() {
+    const today = new Date().toISOString().split('T')[0];
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+    const oneWeekAgoStr = oneWeekAgo.toISOString().split('T')[0];
+    
+    // Set filter untuk 7 hari terakhir
+    document.getElementById('startDate').value = oneWeekAgoStr;
+    document.getElementById('endDate').value = today;
+    document.getElementById('revenueStartDate').value = oneWeekAgoStr;
+    document.getElementById('revenueEndDate').value = today;
+    document.getElementById('customerStartDate').value = oneWeekAgoStr;
+    document.getElementById('customerEndDate').value = today;
+}
+
+// Panggil setelah halaman dimuat
+setTimeout(setDefaultDates, 1000);
 
     </script>
 </body>
