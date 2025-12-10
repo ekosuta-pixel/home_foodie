@@ -3517,7 +3517,7 @@ function filterOrdersByDate(orders, startDate, endDate) {
                 input.value = '0';
             });
             
-            document.getElementById('mix1-keju-qty').value = '2';
+            
             document.getElementById('mix1-keju-processing').value = 'frozen';
         }
 
@@ -3525,6 +3525,8 @@ function filterOrdersByDate(orders, startDate, endDate) {
             const totalPcs = mix1Selection.original.qty + mix1Selection.sosis.qty + mix1Selection.rawit.qty;
             const requiredPcs = mix1PackageCount * 8;
             const totalKeju = mix1PackageCount * 2;
+            document.getElementById('mix1-keju-qty').value = totalKeju;
+
             const totalPrice = mix1PackageCount * 30000;
             
             document.querySelector('.mix1-qty[data-type="original"]').value = mix1Selection.original.qty;
